@@ -11,7 +11,7 @@ jobs:
         # ruby: [ '2.6', '2.7', '3.0' ]
         # rails: [ '6.0', '6.1' ]
         ruby: [ '2.6' ]
-        rails: [ '6.0' ]
+        rails: [ '5.2', '6.0' ]
     steps:
     - uses: actions/checkout@v2
 
