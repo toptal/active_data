@@ -15,11 +15,22 @@ module ActiveData
         end
 
         if ActiveModel.version >= Gem::Version.new('6.1.0')
-          def self.import_errors(from, to, prefix)
-            from.each do |error|
-              key = "#{prefix}.#{error.attribute}"
-              ignored_options = ActiveModel::Error::CALLBACKS_OPTIONS + ActiveModel::Error::MESSAGE_OPTIONS
-              to.import(error, attribute: key) unless to.added?(key, error.type, error.options.except(*ignored_options))
+          class << self
+            def import_errors(from, to, prefix)
+              from.each do |error|
+                error = unwrapped_error(error)
+                key = "#{prefix}.#{error.attribute}"
+                ignored_options = ActiveModel::Error::CALLBACKS_OPTIONS + ActiveModel::Error::MESSAGE_OPTIONS
+                to.import(error, attribute: key) unless to.added?(key, error.type, error.options.except(*ignored_options))
+              end
+            end
+
+            def unwrapped_error(error)
+              if error.is_a?(ActiveModel::NestedError)
+                error.inner_error
+              else
+                error
+              end
             end
           end
         else # up to 6.0.x
