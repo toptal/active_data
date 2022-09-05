@@ -71,7 +71,7 @@ module ActiveData
           source = :"#{attribute.reference}.#{attribute.column}"
 
           if ActiveModel.version >= Gem::Version.new('6.1.0')
-            nested_error = send(attribute.reference).errors.find do |error|
+            nested_error = send(attribute.reference)&.errors&.find do |error|
               error.is_a?(ActiveModel::NestedError) && error.inner_error.attribute == attribute.column.to_sym
             end
 
