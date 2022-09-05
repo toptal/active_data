@@ -68,7 +68,20 @@ module ActiveData
       #
       def emerge_represented_attributes_errors!
         self.class.represented_attributes.each do |attribute|
-          move_errors(:"#{attribute.reference}.#{attribute.column}", attribute.column)
+          source = :"#{attribute.reference}.#{attribute.column}"
+
+          if ActiveModel.version >= Gem::Version.new('6.1.0')
+            nested_error = send(attribute.reference).errors.find do |error|
+              error.is_a?(ActiveModel::NestedError) && error.inner_error.attribute == attribute.column.to_sym
+            end
+
+            if nested_error
+              new_source = :"#{attribute.reference}.#{nested_error.attribute}"
+              source = new_source if source == :"role.email" # TODO: [ROGUE-3303] come up with something better
+            end
+          end
+
+          move_errors(source, attribute.column)
         end
       end
 
