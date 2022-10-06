@@ -21,7 +21,7 @@ module ActiveData
               ignored_options = ActiveModel::Error::CALLBACKS_OPTIONS + ActiveModel::Error::MESSAGE_OPTIONS
 
               options = error.options.merge(generated_message: error.message)
-              to.add(key, :'', options) unless to.added?(key, :'', options.except(*ignored_options))
+              to.add(key, :'', **options) unless to.added?(key, :'', options.except(*ignored_options))
             end
           end
         else # up to 6.0.x
