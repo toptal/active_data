@@ -81,7 +81,7 @@ module ActiveData
             errors.add(to, :'', **options)
           end
 
-          errors.delete(from) rescue nil
+          errors.delete(from)
         end
       else # up to 6.0.x
         def move_errors(from, to)
